@@ -1,0 +1,1 @@
+1. 使用uv run 来执行python脚本
