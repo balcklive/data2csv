@@ -10,7 +10,7 @@ class ConvertRequest(BaseModel):
     data: List[List[Any]] = Field(
         ...,
         description="2D array data to convert",
-        min_items=1
+        min_length=1
     )
     headers: Optional[List[str]] = Field(
         None,
@@ -21,8 +21,8 @@ class ConvertRequest(BaseModel):
         description="Output filename (without extension)"
     )
 
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "data": [
                     ["John", "25", "Engineer"],
@@ -33,6 +33,7 @@ class ConvertRequest(BaseModel):
                 "filename": "employees"
             }
         }
+    }
 
 
 class ConvertResponse(BaseModel):
