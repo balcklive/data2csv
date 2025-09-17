@@ -48,8 +48,7 @@ def convert_to_csv(
     return response.content
 
 
-@mcp.tool
-def convert_to_excel(
+def _convert_to_excel(
     data: List[List[Any]],
     headers: Optional[List[str]] = None,
     filename: str = "data",
@@ -84,6 +83,50 @@ def convert_to_excel(
         raise ValueError(f"Conversion failed: {response.message}")
 
     return response.content
+
+
+@mcp.tool
+def convert_to_excel(
+    data: List[List[Any]],
+    headers: Optional[List[str]] = None,
+    filename: str = "data",
+    styled: bool = False
+) -> str:
+    """
+    Convert 2D array data to Excel format.
+
+    Args:
+        data: 2D array data to convert (required)
+        headers: Optional column headers
+        filename: Output filename (without extension, defaults to 'data')
+        styled: Whether to apply styling to the Excel file (defaults to False)
+
+    Returns:
+        Base64 encoded Excel file content
+    """
+    return _convert_to_excel(data, headers, filename, styled)
+
+
+@mcp.tool
+def export_to_excel(
+    data: List[List[Any]],
+    headers: Optional[List[str]] = None,
+    filename: str = "data",
+    styled: bool = False
+) -> str:
+    """
+    Export 2D array data to Excel format (alias for convert_to_excel).
+
+    Args:
+        data: 2D array data to convert (required)
+        headers: Optional column headers
+        filename: Output filename (without extension, defaults to 'data')
+        styled: Whether to apply styling to the Excel file (defaults to False)
+
+    Returns:
+        Base64 encoded Excel file content
+    """
+    return _convert_to_excel(data, headers, filename, styled)
 
 
 if __name__ == "__main__":
