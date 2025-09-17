@@ -27,8 +27,9 @@ COPY src/ ./src/
 RUN uv sync --frozen
 
 # Create non-root user for security
-RUN groupadd -r appuser && useradd -r -g appuser appuser
+RUN groupadd -r appuser && useradd -r -g appuser -m appuser
 RUN chown -R appuser:appuser /app
+RUN chown -R appuser:appuser /home/appuser
 USER appuser
 
 # Expose port
