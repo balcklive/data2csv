@@ -22,6 +22,7 @@ WORKDIR /app
 # Copy project files
 COPY pyproject.toml uv.lock ./
 COPY src/ ./src/
+COPY run_simple_remote.py ./
 
 # Install dependencies using uv
 RUN uv sync --frozen
