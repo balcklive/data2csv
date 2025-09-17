@@ -2,12 +2,14 @@
 
 import sys
 import os
+import base64
 from typing import List, Any, Optional
 
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from fastmcp import FastMCP
+from fastmcp.utilities.types import File
 from .models.data_models import ConvertRequest
 from .tools.csv_converter import CSVConverter
 from .tools.excel_converter import ExcelConverter
@@ -108,14 +110,14 @@ def convert_to_excel(
 
 
 @mcp.tool
-def export_to_excel(
+def convert_to_excel_file(
     data: List[List[Any]],
     headers: Optional[List[str]] = None,
     filename: str = "data",
     styled: bool = False
-) -> str:
+) -> File:
     """
-    Export 2D array data to Excel format (alias for convert_to_excel).
+    Convert 2D array data to Excel file object that can be downloaded directly.
 
     Args:
         data: 2D array data to convert (required)
@@ -124,9 +126,53 @@ def export_to_excel(
         styled: Whether to apply styling to the Excel file (defaults to False)
 
     Returns:
-        Base64 encoded Excel file content
+        Excel file object that can be downloaded
     """
-    return _convert_to_excel(data, headers, filename, styled)
+    # Get base64 encoded content
+    base64_content = _convert_to_excel(data, headers, filename, styled)
+
+    # Decode base64 to binary data
+    excel_bytes = base64.b64decode(base64_content)
+
+    # Return File object with proper filename and content
+    return File(
+        data=excel_bytes,
+        name=f"{filename}.xlsx",
+        format="xlsx"
+    )
+
+
+@mcp.tool
+def export_to_excel(
+    data: List[List[Any]],
+    headers: Optional[List[str]] = None,
+    filename: str = "data",
+    styled: bool = False
+) -> File:
+    """
+    Export 2D array data to Excel file object (improved version for direct download).
+
+    Args:
+        data: 2D array data to convert (required)
+        headers: Optional column headers
+        filename: Output filename (without extension, defaults to 'data')
+        styled: Whether to apply styling to the Excel file (defaults to False)
+
+    Returns:
+        Excel file object that can be downloaded directly
+    """
+    # Get base64 encoded content
+    base64_content = _convert_to_excel(data, headers, filename, styled)
+
+    # Decode base64 to binary data
+    excel_bytes = base64.b64decode(base64_content)
+
+    # Return File object with proper filename and content
+    return File(
+        data=excel_bytes,
+        name=f"{filename}.xlsx",
+        format="xlsx"
+    )
 
 
 if __name__ == "__main__":
